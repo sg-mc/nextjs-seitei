@@ -25,14 +25,19 @@ export default async function HomePage() {
     <main className="min-h-screen">
       <ScrollAnimation />
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white overflow-hidden animate-gradient">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-purple-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
-          <div className="absolute top-40 right-20 w-96 h-96 bg-pink-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style={{animationDelay: '2s'}}></div>
-          <div className="absolute bottom-20 left-1/2 w-80 h-80 bg-indigo-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style={{animationDelay: '4s'}}></div>
+      <section className="relative text-white overflow-hidden">
+        <div 
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: 'url(/banner.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        >
+          <div className="absolute inset-0 bg-black/50"></div>
         </div>
-        <div className="relative container mx-auto max-w-6xl px-6 py-24 md:py-32">
+        <div className="relative z-10 container mx-auto max-w-6xl px-6 py-24 md:py-32">
           <div className="animate-fadeInUp">
             <h1 className="text-5xl md:text-7xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-400 animate-gradient glow-text">
               聖帝日記-旧アメブロ跡地-
@@ -134,43 +139,50 @@ export default async function HomePage() {
             関連サービス
           </h2>
           <div className="grid grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <a href="https://sg-mc.github.io/sglp/" target="_blank" rel="noopener noreferrer" className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn">
+            <a href="https://note.com/fistofphoenix/magazines" target="_blank" rel="noopener noreferrer" className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn">
               <div className="absolute inset-0 opacity-20">
                 <img 
-                  src="/saint-grail.png" 
-                  alt="セイントグレイル製品" 
+                  src="/illust.png" 
+                  alt="白熱教室" 
                   className="w-full h-full object-cover rounded-xl"
                 />
               </div>
-              <div className="relative z-10">
-                <div className="w-16 h-16 mb-4 mx-auto">
-                  <img 
-                    src="/sglogo.png" 
-                    alt="セイントグレイルロゴ" 
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <h3 className="text-xl font-bold mb-3">セイントグレイル</h3>
-                <p className="text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-hidden transition-all duration-300">
-                  「自分で使いたい」から開発した、
-                  <br />Amazon限定の男性用基礎化粧品セット
-                </p>
-                <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <span className="text-indigo-600 dark:text-indigo-400 font-semibold">続きはこちら →</span>
-                </div>
+              <div className="w-16 h-16 mb-4 relative z-10">
+                <img 
+                  src="/audio.png" 
+                  alt="白熱教室アイコン" 
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <h3 className="text-xl font-bold mb-3 relative z-10">白熱教室</h3>
+              <p className="text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-hidden transition-all duration-300 relative z-10">
+                noteでオーディオブックを販売しています。
+男子の人生にとって必須の栄養であるカネと女の成功、その成分がたくさん含まれた音声教材です。
+              </p>
+              <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 relative z-10">
+                <span className="text-indigo-600 dark:text-indigo-400 font-semibold">続きはこちら →</span>
               </div>
             </a>
             <div className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.1s'}}>
-              <div className="w-12 h-12 mb-4">
-                <svg className="w-full h-full text-indigo-600 dark:text-indigo-400" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-                </svg>
+              <div className="absolute inset-0 opacity-20">
+                <img 
+                  src="/club.png" 
+                  alt="聖丁倶楽部" 
+                  className="w-full h-full object-cover rounded-xl"
+                />
               </div>
-              <h3 className="text-xl font-bold mb-3">聖丁倶楽部</h3>
-              <p className="text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-hidden transition-all duration-300">
+              <div className="w-16 h-16 mb-4 relative z-10">
+                <img 
+                  src="/clubicon.png" 
+                  alt="聖丁倶楽部アイコン" 
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <h3 className="text-xl font-bold mb-3 relative z-10">聖丁倶楽部</h3>
+              <p className="text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-hidden transition-all duration-300 relative z-10">
                 コミュニティ参加型のリフォームサービス
               </p>
-              <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 relative z-10">
                 <span className="text-indigo-600 dark:text-indigo-400 font-semibold">続きはこちら →</span>
               </div>
             </div>
@@ -199,19 +211,30 @@ export default async function HomePage() {
                 </div>
               </div>
             </a>
-            <a href="https://note.com/fistofphoenix/magazines" target="_blank" rel="noopener noreferrer" className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.3s'}}>
-              <div className="w-12 h-12 mb-4">
-                <svg className="w-full h-full text-indigo-600 dark:text-indigo-400" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/>
-                </svg>
+            <a href="https://sg-mc.github.io/sglp/" target="_blank" rel="noopener noreferrer" className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.3s'}}>
+              <div className="absolute inset-0 opacity-20">
+                <img 
+                  src="/saint-grail.png" 
+                  alt="セイントグレイル製品" 
+                  className="w-full h-full object-cover rounded-xl"
+                />
               </div>
-              <h3 className="text-xl font-bold mb-3">白熱教室</h3>
-              <p className="text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-hidden transition-all duration-300">
-                noteでオーディオブックを販売しています。
-男子の人生にとって必須の栄養であるカネと女の成功、その成分がたくさん含まれた音声教材です。
-              </p>
-              <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <span className="text-indigo-600 dark:text-indigo-400 font-semibold">続きはこちら →</span>
+              <div className="relative z-10">
+                <div className="w-16 h-16 mb-4 mx-auto">
+                  <img 
+                    src="/sglogo.png" 
+                    alt="セイントグレイルロゴ" 
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <h3 className="text-xl font-bold mb-3">セイントグレイル</h3>
+                <p className="text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-hidden transition-all duration-300">
+                  「自分で使いたい」から開発した、
+                  <br />Amazon限定の男性用基礎化粧品セット
+                </p>
+                <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <span className="text-indigo-600 dark:text-indigo-400 font-semibold">続きはこちら →</span>
+                </div>
               </div>
             </a>
           </div>
