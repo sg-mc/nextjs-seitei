@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { type SanityDocument } from "next-sanity";
 import { client } from "@/sanity/client";
 
@@ -41,11 +42,13 @@ export default async function BlogPage() {
             >
               <Link href={`/hello-sanity/${post.slug.current}`} className="block">
                 {post.mainImageUrl && (
-                  <div className="aspect-video w-full overflow-hidden">
-                    <img 
-                      src={post.mainImageUrl} 
+                  <div className="aspect-video w-full overflow-hidden relative">
+                    <Image
+                      src={post.mainImageUrl}
                       alt={post.title}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                     />
                   </div>
                 )}
@@ -64,7 +67,7 @@ export default async function BlogPage() {
                   </h2>
                   
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {post.categories && post.categories.map((category: any) => (
+                    {post.categories && post.categories.map((category: { _id: string; title: string }) => (
                       <span key={category._id} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-rose-900/30 to-pink-900/30 text-rose-200 border border-rose-800/30">
                         {category.title}
                       </span>

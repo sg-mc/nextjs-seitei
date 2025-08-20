@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { type SanityDocument } from "next-sanity";
 import { client } from "@/sanity/client";
 import ScrollAnimation from "./components/ScrollAnimation";
@@ -64,9 +65,11 @@ export default async function HomePage() {
               </p>
             </div>
             <div className="flex justify-center animate-fadeInUp" style={{animationDelay: '0.3s'}}>
-              <img 
+              <Image 
                 src="/seitei-icon.png" 
                 alt="聖丁アイコン" 
+                width={256}
+                height={256}
                 className="w-64 h-64 object-contain mix-blend-multiply dark:mix-blend-screen"
               />
             </div>
@@ -90,11 +93,13 @@ export default async function HomePage() {
               >
                 <Link href={`/hello-sanity/${post.slug.current}`} className="block">
                   {post.mainImageUrl && (
-                    <div className="aspect-video w-full overflow-hidden">
-                      <img 
+                    <div className="aspect-video w-full overflow-hidden relative">
+                      <Image 
                         src={post.mainImageUrl} 
                         alt={post.title}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                       />
                     </div>
                   )}
@@ -112,7 +117,7 @@ export default async function HomePage() {
                   </h3>
                   
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {post.categories && post.categories.map((category: any) => (
+                    {post.categories && post.categories.map((category: { _id: string; title: string }) => (
                       <span key={category._id} className="text-xs px-2 py-1 rounded-full bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
                         {category.title}
                       </span>
@@ -141,16 +146,19 @@ export default async function HomePage() {
           <div className="grid grid-cols-2 gap-8 max-w-4xl mx-auto">
             <a href="https://note.com/fistofphoenix/magazines" target="_blank" rel="noopener noreferrer" className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover-lift card-3d gradient-border animate-scaleIn">
               <div className="absolute inset-0 opacity-20">
-                <img 
+                <Image 
                   src="/illust.png" 
                   alt="白熱教室" 
-                  className="w-full h-full object-cover rounded-xl"
+                  fill
+                  className="object-cover rounded-xl"
                 />
               </div>
               <div className="w-16 h-16 mb-4 relative z-10">
-                <img 
+                <Image 
                   src="/audio.png" 
                   alt="白熱教室アイコン" 
+                  width={64}
+                  height={64}
                   className="w-full h-full object-contain"
                 />
               </div>
@@ -165,16 +173,19 @@ export default async function HomePage() {
             </a>
             <div className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.1s'}}>
               <div className="absolute inset-0 opacity-20">
-                <img 
+                <Image 
                   src="/club.png" 
                   alt="聖丁倶楽部" 
-                  className="w-full h-full object-cover rounded-xl"
+                  fill
+                  className="object-cover rounded-xl"
                 />
               </div>
               <div className="w-16 h-16 mb-4 relative z-10">
-                <img 
+                <Image 
                   src="/clubicon.png" 
                   alt="聖丁倶楽部アイコン" 
+                  width={64}
+                  height={64}
                   className="w-full h-full object-contain"
                 />
               </div>
@@ -188,17 +199,20 @@ export default async function HomePage() {
             </div>
             <a href="https://itoshima-honeygift.com/" target="_blank" rel="noopener noreferrer" className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.2s'}}>
               <div className="absolute inset-0 opacity-20">
-                <img 
+                <Image 
                   src="/honey.jpg" 
                   alt="ITOSHIMA HONEY" 
-                  className="w-full h-full object-cover rounded-xl"
+                  fill
+                  className="object-cover rounded-xl"
                 />
               </div>
               <div className="relative z-10">
                 <div className="w-20 h-20 mb-4 mx-auto">
-                  <img 
+                  <Image 
                     src="/honeylogo.png" 
                     alt="ITOSHIMA HONEYロゴ" 
+                    width={80}
+                    height={80}
                     className="w-full h-full object-contain"
                   />
                 </div>
@@ -213,17 +227,20 @@ export default async function HomePage() {
             </a>
             <a href="https://sg-mc.github.io/sglp/" target="_blank" rel="noopener noreferrer" className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.3s'}}>
               <div className="absolute inset-0 opacity-20">
-                <img 
+                <Image 
                   src="/saint-grail.png" 
                   alt="セイントグレイル製品" 
-                  className="w-full h-full object-cover rounded-xl"
+                  fill
+                  className="object-cover rounded-xl"
                 />
               </div>
               <div className="relative z-10">
                 <div className="w-16 h-16 mb-4 mx-auto">
-                  <img 
+                  <Image 
                     src="/sglogo.png" 
                     alt="セイントグレイルロゴ" 
+                    width={64}
+                    height={64}
                     className="w-full h-full object-contain"
                   />
                 </div>

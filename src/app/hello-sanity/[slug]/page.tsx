@@ -3,6 +3,7 @@ import imageUrlBuilder from "@sanity/image-url";
 import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { client } from "@/sanity/client";
 import Link from "next/link";
+import Image from "next/image";
 
 const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]{
   ..., 
@@ -22,9 +23,9 @@ const options = { next: { revalidate: 0 } };
 export default async function PostPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
-  const { slug } = await params;
+  const { slug } = params;
   const post = await client.fetch<SanityDocument>(POST_QUERY, { slug }, options);
   const postImageUrl = post.image
     ? urlFor(post.image)?.width(550).height(310).url()
@@ -36,18 +37,18 @@ export default async function PostPage({
         ← Back to posts
       </Link>
       {postImageUrl && (
-        <img
+        <Image
           src={postImageUrl}
           alt={post.title}
           className="aspect-video rounded-xl"
-          width="550"
-          height="310"
+          width={550}
+          height={310}
         />
       )}
       <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
       
       <div className="flex flex-wrap gap-2 mb-6">
-        {post.categories && post.categories.map((category: any) => (
+        {post.categories && post.categories.map((category: { _id: string; title: string }) => (
           <span key={category._id} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
             {category.title}
           </span>
