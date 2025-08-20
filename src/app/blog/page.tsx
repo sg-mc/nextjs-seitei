@@ -40,7 +40,7 @@ export default async function BlogPage() {
               className="group relative bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border border-slate-700/50 animate-slideIn"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <Link href={`/hello-sanity/${post.slug.current}`} className="block">
+              <Link href={`/blog/${post.slug.current}`} className="block">
                 {post.mainImageUrl && (
                   <div className="aspect-video w-full overflow-hidden relative">
                     <Image

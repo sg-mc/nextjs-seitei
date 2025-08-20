@@ -91,7 +91,7 @@ export default async function HomePage() {
                 className="group relative bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden animate-fadeInUp hover-lift gradient-border"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <Link href={`/hello-sanity/${post.slug.current}`} className="block">
+                <Link href={`/blog/${post.slug.current}`} className="block">
                   {post.mainImageUrl && (
                     <div className="aspect-video w-full overflow-hidden relative">
                       <Image 

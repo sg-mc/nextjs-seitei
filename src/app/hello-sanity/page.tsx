@@ -21,7 +21,7 @@ export default async function PostsPage() {
         {posts.map((post) => (
           <Link
             key={post._id}
-            href={`/hello-sanity/${post.slug.current}`}
+            href={`/blog/${post.slug.current}`}
             className="border p-4 rounded-lg hover:bg-gray-50 transition-colors"
           >
             <h2 className="text-2xl font-semibold">{post.title}</h2>
