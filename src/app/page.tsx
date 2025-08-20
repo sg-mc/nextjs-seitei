@@ -139,7 +139,7 @@ export default async function HomePage() {
             関連サービス
           </h2>
           <div className="grid grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <a href="https://note.com/fistofphoenix/magazines" target="_blank" rel="noopener noreferrer" className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn">
+            <a href="https://note.com/fistofphoenix/magazines" target="_blank" rel="noopener noreferrer" className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover-lift card-3d gradient-border animate-scaleIn">
               <div className="absolute inset-0 opacity-20">
                 <img 
                   src="/illust.png" 
@@ -155,7 +155,7 @@ export default async function HomePage() {
                 />
               </div>
               <h3 className="text-xl font-bold mb-3 relative z-10">白熱教室</h3>
-              <p className="text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-hidden transition-all duration-300 relative z-10">
+              <p className="text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-y-auto transition-all duration-300 relative z-10">
                 noteでオーディオブックを販売しています。
 男子の人生にとって必須の栄養であるカネと女の成功、その成分がたくさん含まれた音声教材です。
               </p>
@@ -163,7 +163,7 @@ export default async function HomePage() {
                 <span className="text-indigo-600 dark:text-indigo-400 font-semibold">続きはこちら →</span>
               </div>
             </a>
-            <div className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.1s'}}>
+            <div className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.1s'}}>
               <div className="absolute inset-0 opacity-20">
                 <img 
                   src="/club.png" 
@@ -179,11 +179,11 @@ export default async function HomePage() {
                 />
               </div>
               <h3 className="text-xl font-bold mb-3 relative z-10">聖丁倶楽部</h3>
-              <p className="text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-hidden transition-all duration-300 relative z-10">
-                コミュニティ参加型のリフォームサービス
+              <p className="text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-y-auto transition-all duration-300 relative z-10">
+                DIY技術向上と、所有物件のリフォーム完工を図る、コミュニティ参加型の実践型DIYスクールです。
               </p>
               <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 relative z-10">
-                <span className="text-indigo-600 dark:text-indigo-400 font-semibold">続きはこちら →</span>
+                <span className="text-indigo-600 dark:text-indigo-400 font-semibold">詳しくは下記X,メルマガをチェック</span>
               </div>
             </div>
             <a href="https://itoshima-honeygift.com/" target="_blank" rel="noopener noreferrer" className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.2s'}}>
