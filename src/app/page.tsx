@@ -41,7 +41,7 @@ export default async function HomePage() {
         <div className="relative z-10 container mx-auto max-w-6xl px-6 py-24 md:py-32">
           <div className="animate-fadeInUp">
             <h1 className="text-5xl md:text-7xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-400 animate-gradient glow-text">
-              聖帝日記-旧アメブロ跡地-
+              聖丁日記-旧アメブロ跡地-
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-gray-200 animate-fadeInUp" style={{animationDelay: '0.2s'}}>
               残酷な資本主義世界で、カネと女の道案内をするブログ。
@@ -138,7 +138,7 @@ export default async function HomePage() {
       </section>
 
       {/* Related Services */}
-      <section className="py-16 md:py-24 bg-white dark:bg-gray-900">
+      <section id="services" className="py-16 md:py-24 bg-white dark:bg-gray-900">
         <div className="container mx-auto max-w-6xl px-6 scroll-animate">
           <h2 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent animate-gradient">
             関連サービス
@@ -259,7 +259,7 @@ export default async function HomePage() {
       </section>
 
       {/* SNS Links */}
-      <section className="py-16 md:py-24 bg-gray-50 dark:bg-gray-800">
+      <section id="sns" className="py-16 md:py-24 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto max-w-4xl px-6 scroll-animate">
           <h2 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent animate-gradient">
             SNS

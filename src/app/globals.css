@@ -200,6 +200,13 @@ body {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
+/* Header title outlined style: white fill with purple stroke */
+.outlined-purple {
+  color: #ffffff; /* white fill */
+  -webkit-text-stroke: 1.5px #7c3aed; /* purple-600 */
+  text-stroke: 1.5px #7c3aed;
+}
+
 .hover-lift {
   transition: all 0.3s ease;
 }
