@@ -5,6 +5,28 @@ import { client } from "@/sanity/client";
 import Link from "next/link";
 import Image from "next/image";
 
+// Local types for fetched data
+type SlugRef = { current?: string };
+type Category = { _id: string; title: string; slug?: SlugRef };
+type Post = {
+  _id: string;
+  title: string;
+  slug: SlugRef;
+  publishedAt?: string | Date;
+  body?: unknown;
+  image?: SanityImageSource | null;
+  tags?: string[];
+  categories?: Category[];
+};
+type RelatedPost = {
+  _id: string;
+  title: string;
+  slug: SlugRef;
+  publishedAt?: string;
+  categories?: Category[];
+  mainImageUrl?: string | null;
+};
+
 const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]{
   ..., 
   "image": mainImage,
@@ -50,26 +72,26 @@ export default async function PostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await client.fetch<SanityDocument>(POST_QUERY, { slug }, options);
+  const post = await client.fetch<Post>(POST_QUERY, { slug }, options);
   const postImageUrl = post.image
     ? urlFor(post.image)?.width(1200).height(675).url()
     : null;
 
   const categorySlugs: string[] = Array.isArray(post.categories)
     ? post.categories
-        .map((c: any) => c?.slug?.current)
+        .map((c: Category) => c?.slug?.current)
         .filter((s: string | undefined): s is string => Boolean(s))
     : [];
   const tags: string[] = Array.isArray(post.tags) ? post.tags : [];
 
-  let relatedPosts = await client.fetch<SanityDocument[]>(
+  let relatedPosts = await client.fetch<RelatedPost[]>(
     RELATED_POSTS_QUERY,
     { slug, categorySlugs, tags },
     options
   );
 
   if (!relatedPosts || relatedPosts.length === 0) {
-    relatedPosts = await client.fetch<SanityDocument[]>(
+    relatedPosts = await client.fetch<RelatedPost[]>(
       LATEST_EXCEPT_QUERY,
       { slug },
       options
@@ -139,7 +161,7 @@ export default async function PostPage({
             関連記事
           </h2>
           <div className="grid gap-6 md:grid-cols-2">
-            {relatedPosts.map((rp: any, index: number) => (
+            {relatedPosts.map((rp: RelatedPost, index: number) => (
               <article
                 key={rp._id}
                 className="group relative bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"

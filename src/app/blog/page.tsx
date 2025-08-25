@@ -3,6 +3,20 @@ import Image from "next/image";
 import { type SanityDocument } from "next-sanity";
 import { client } from "@/sanity/client";
 
+// Local types for fetched data
+type SlugRef = { current?: string };
+type CategoryWithCount = { _id: string; title: string; slug?: SlugRef; count: number };
+type Category = { _id: string; title: string; slug?: SlugRef };
+type PostListItem = {
+  _id: string;
+  title: string;
+  slug: SlugRef;
+  publishedAt?: string;
+  tags?: string[];
+  categories?: Category[];
+  mainImageUrl?: string;
+};
+
 const POSTS_QUERY = `*[
   _type == "post"
   && defined(slug.current)
@@ -35,8 +49,8 @@ export default async function BlogPage({
   const categoryParam = Array.isArray(sp?.category) ? sp.category[0] : sp?.category;
   const categorySlug = categoryParam ?? null;
   const [categories, posts] = await Promise.all([
-    client.fetch<any[]>(CATEGORIES_QUERY, {}, options),
-    client.fetch<SanityDocument[]>(POSTS_QUERY, { category: categorySlug }, options),
+    client.fetch<CategoryWithCount[]>(CATEGORIES_QUERY, {}, options),
+    client.fetch<PostListItem[]>(POSTS_QUERY, { category: categorySlug }, options),
   ]);
   const selectedCategory = categories?.find(
     (c) => c?.slug?.current === categoryParam
