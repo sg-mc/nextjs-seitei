@@ -52,7 +52,7 @@ export default async function PostPage({
   const { slug } = await params;
   const post = await client.fetch<SanityDocument>(POST_QUERY, { slug }, options);
   const postImageUrl = post.image
-    ? urlFor(post.image)?.width(550).height(310).url()
+    ? urlFor(post.image)?.width(1200).height(675).url()
     : null;
 
   const categorySlugs: string[] = Array.isArray(post.categories)
@@ -82,15 +82,17 @@ export default async function PostPage({
         ← 記事一覧に戻る
       </Link>
       {postImageUrl && (
-        <Image
-          src={postImageUrl}
-          alt={post.title}
-          className="aspect-video rounded-xl"
-          width={550}
-          height={310}
-        />
+        <div className="relative w-full aspect-video overflow-hidden rounded-xl">
+          <Image
+            src={postImageUrl}
+            alt={post.title}
+            fill
+            className="object-cover"
+            sizes="(min-width: 768px) 768px, 100vw"
+          />
+        </div>
       )}
-      <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
+      <h1 className="text-3xl md:text-4xl font-bold mb-4">{post.title}</h1>
       
       <div className="flex flex-wrap gap-2 mb-6">
         {post.categories && post.categories.map((category: { _id: string; title: string }) => (

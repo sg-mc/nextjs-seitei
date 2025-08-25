@@ -40,7 +40,7 @@ export default async function HomePage() {
         </div>
         <div className="relative z-10 container mx-auto max-w-6xl px-6 py-24 md:py-32">
           <div className="animate-fadeInUp">
-            <h1 className="text-5xl md:text-7xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-400 animate-gradient glow-text">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-400 animate-gradient glow-text">
               聖丁日記-旧アメブロ跡地-
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-gray-200 animate-fadeInUp" style={{animationDelay: '0.2s'}}>
@@ -143,8 +143,8 @@ export default async function HomePage() {
           <h2 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent animate-gradient">
             関連サービス
           </h2>
-          <div className="grid grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <a href="https://note.com/fistofphoenix/magazines" target="_blank" rel="noopener noreferrer" className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover-lift card-3d gradient-border animate-scaleIn">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 max-w-3xl sm:max-w-4xl mx-auto">
+            <a href="https://note.com/fistofphoenix/magazines" target="_blank" rel="noopener noreferrer" className="group relative w-full bg-white dark:bg-gray-900 rounded-xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[4/3] md:aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover-lift card-3d gradient-border animate-scaleIn">
               <div className="absolute inset-0 opacity-20">
                 <Image 
                   src="/illust.png" 
@@ -171,7 +171,7 @@ export default async function HomePage() {
                 <span className="text-indigo-600 dark:text-indigo-400 font-semibold">続きはこちら →</span>
               </div>
             </a>
-            <div className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.1s'}}>
+            <div className="group relative w-full bg-white dark:bg-gray-900 rounded-xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[4/3] md:aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.1s'}}>
               <div className="absolute inset-0 opacity-20">
                 <Image 
                   src="/club.png" 
@@ -197,7 +197,7 @@ export default async function HomePage() {
                 <span className="text-indigo-600 dark:text-indigo-400 font-semibold">詳しくは下記X,メルマガをチェック</span>
               </div>
             </div>
-            <a href="https://itoshima-honeygift.com/" target="_blank" rel="noopener noreferrer" className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.2s'}}>
+            <a href="https://itoshima-honeygift.com/" target="_blank" rel="noopener noreferrer" className="group relative w-full bg-white dark:bg-gray-900 rounded-xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[4/3] md:aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.2s'}}>
               <div className="absolute inset-0 opacity-20">
                 <Image 
                   src="/honey.jpg" 
@@ -225,7 +225,7 @@ export default async function HomePage() {
                 </div>
               </div>
             </a>
-            <a href="https://sg-mc.github.io/sglp/" target="_blank" rel="noopener noreferrer" className="group relative bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.3s'}}>
+            <a href="https://sg-mc.github.io/sglp/" target="_blank" rel="noopener noreferrer" className="group relative w-full bg-white dark:bg-gray-900 rounded-xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[4/3] md:aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.3s'}}>
               <div className="absolute inset-0 opacity-20">
                 <Image 
                   src="/saint-grail.png" 

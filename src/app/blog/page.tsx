@@ -91,9 +91,9 @@ export default async function BlogPage({
           </p>
         </header>
 
-        <div className="grid lg:grid-cols-12 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10">
           {/* Sidebar: Categories summary */}
-          <aside className="lg:col-span-4 space-y-4">
+          <aside className="hidden lg:block lg:col-span-4 space-y-4">
             <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
               <div className="p-5 border-b border-gray-200">
                 <h2 className="text-lg font-semibold text-gray-900">カテゴリ</h2>
@@ -132,8 +132,43 @@ export default async function BlogPage({
             </div>
           </aside>
 
+          {/* Mobile: Collapsible categories */}
+          <div className="lg:hidden col-span-12">
+            <details className="rounded-2xl border border-gray-200 bg-white">
+              <summary className="list-none cursor-pointer px-4 py-3 font-semibold text-gray-900 flex items-center justify-between">
+                カテゴリ
+                <span className="text-gray-500 text-sm">タップして展開</span>
+              </summary>
+              <div className="p-3 pt-0">
+                <ul className="divide-y divide-gray-100">
+                  <li>
+                    <Link
+                      href="/blog"
+                      className="flex items-center justify-between px-2 py-3 text-sm"
+                    >
+                      <span className="font-medium">すべて</span>
+                    </Link>
+                  </li>
+                  {sortedCategories?.map((cat) => (
+                    <li key={cat._id}>
+                      <Link
+                        href={`/blog?category=${cat?.slug?.current}`}
+                        className="flex items-center justify-between px-2 py-3 text-sm"
+                      >
+                        <span className="font-medium whitespace-nowrap">{cat.title}</span>
+                        <span className="ml-3 inline-flex items-center justify-center rounded-full bg-gray-100 text-gray-800 border border-gray-200 px-2.5 py-1 text-xs min-w-[2rem]">
+                          {cat.count}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </details>
+          </div>
+
           {/* Grid: Posts */}
-          <div className="lg:col-span-7 grid gap-10 md:grid-cols-2 lg:grid-cols-2">
+          <div className="col-span-1 lg:col-span-7 grid gap-3 sm:gap-4 md:gap-6 grid-cols-2">
             {posts.map((post, index) => (
               <article
                 key={post._id}
@@ -142,19 +177,19 @@ export default async function BlogPage({
               >
               <Link href={`/blog/${post.slug.current}`} className="block">
                 {post.mainImageUrl && (
-                  <div className="aspect-video w-full overflow-hidden relative">
+                  <div className="aspect-square sm:aspect-[4/3] md:aspect-video w-full overflow-hidden relative">
                     <Image
                       src={post.mainImageUrl}
                       alt={post.title}
                       fill
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      sizes="(min-width: 1024px) 40vw, (min-width: 768px) 50vw, 100vw"
+                      sizes="(min-width: 1024px) 40vw, (min-width: 768px) 50vw, 50vw"
                     />
                   </div>
                 )}
                 
-                <div className="p-8">
-                  <time className="text-base text-gray-500 font-medium">
+                <div className="p-3 sm:p-4 md:p-6 lg:p-8">
+                  <time className="text-xs sm:text-sm md:text-base text-gray-500 font-medium">
                     {new Date(post.publishedAt).toLocaleDateString('ja-JP', {
                       year: 'numeric',
                       month: 'long',
@@ -162,11 +197,11 @@ export default async function BlogPage({
                     })}
                   </time>
                   
-                  <h2 className="mt-3 text-2xl font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors duration-200 line-clamp-2">
+                  <h2 className="mt-1.5 sm:mt-2 text-base sm:text-lg md:text-2xl font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors duration-200 line-clamp-2">
                     {post.title}
                   </h2>
                   
-                  <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="hidden sm:flex mt-2 sm:mt-3 md:mt-4 flex-wrap gap-2">
                     {post.categories && post.categories.map((category: { _id: string; title: string }) => (
                       <span key={category._id} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
                         {category.title}
