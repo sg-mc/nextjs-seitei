@@ -130,7 +130,9 @@ export default async function PostPage({
       </div>
       
       <div className="prose">
-        <p>Published: {new Date(post.publishedAt).toLocaleDateString()}</p>
+        {post.publishedAt ? (
+          <p>Published: {new Date(post.publishedAt).toLocaleDateString()}</p>
+        ) : null}
         {Array.isArray(post.body) && <PortableText value={post.body} />}
       </div>
 
@@ -181,11 +183,13 @@ export default async function PostPage({
                   )}
                   <div className="p-5">
                     <time className="text-sm text-gray-500 dark:text-gray-400">
-                      {new Date(rp.publishedAt).toLocaleDateString('ja-JP', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
+                      {rp.publishedAt
+                        ? new Date(rp.publishedAt).toLocaleDateString('ja-JP', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })
+                        : ''}
                     </time>
                     <h3 className="mt-2 text-lg font-semibold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2">
                       {rp.title}

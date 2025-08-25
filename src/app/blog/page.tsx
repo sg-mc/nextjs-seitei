@@ -204,11 +204,13 @@ export default async function BlogPage({
                 
                 <div className="p-3 sm:p-4 md:p-6 lg:p-8">
                   <time className="text-xs sm:text-sm md:text-base text-gray-500 font-medium">
-                    {new Date(post.publishedAt).toLocaleDateString('ja-JP', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
+                    {post.publishedAt
+                      ? new Date(post.publishedAt).toLocaleDateString('ja-JP', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })
+                      : ''}
                   </time>
                   
                   <h2 className="mt-1.5 sm:mt-2 text-base sm:text-lg md:text-2xl font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors duration-200 line-clamp-2">
