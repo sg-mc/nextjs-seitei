@@ -18,7 +18,7 @@ const LATEST_POSTS_QUERY = `*[
   "mainImageUrl": mainImage.asset->url
 }`;
 
-const options = { next: { revalidate: 0 } };
+const options = { next: { tags: ["posts", "categories"] } };
 
 export default async function HomePage() {
   const latestPosts = await client.fetch<SanityDocument[]>(LATEST_POSTS_QUERY, {}, options);

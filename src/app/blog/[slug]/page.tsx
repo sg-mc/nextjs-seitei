@@ -64,7 +64,7 @@ const urlFor = (source: SanityImageSource) =>
     ? imageUrlBuilder({ projectId, dataset }).image(source)
     : null;
 
-const options = { next: { revalidate: 0 } };
+// options will be created per-request to include slug-based tags
 
 export default async function PostPage({
   params,
@@ -72,7 +72,8 @@ export default async function PostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await client.fetch<Post>(POST_QUERY, { slug }, options);
+  const postOptions = { next: { tags: [`post:${slug}`, "posts"] } } as const;
+  const post = await client.fetch<Post>(POST_QUERY, { slug }, postOptions);
   const postImageUrl = post.image
     ? urlFor(post.image)?.width(1200).height(675).url()
     : null;
@@ -84,17 +85,18 @@ export default async function PostPage({
     : [];
   const tags: string[] = Array.isArray(post.tags) ? post.tags : [];
 
+  const listOptions = { next: { tags: ["posts"] } } as const;
   let relatedPosts = await client.fetch<RelatedPost[]>(
     RELATED_POSTS_QUERY,
     { slug, categorySlugs, tags },
-    options
+    listOptions
   );
 
   if (!relatedPosts || relatedPosts.length === 0) {
     relatedPosts = await client.fetch<RelatedPost[]>(
       LATEST_EXCEPT_QUERY,
       { slug },
-      options
+      listOptions
     );
   }
 
@@ -129,11 +131,77 @@ export default async function PostPage({
         ))}
       </div>
       
-      <div className="prose">
+      <div>
         {post.publishedAt ? (
           <p>Published: {new Date(post.publishedAt).toLocaleDateString()}</p>
         ) : null}
-        {Array.isArray(post.body) && <PortableText value={post.body} />}
+        {Array.isArray(post.body) && (
+          <PortableText
+            value={post.body}
+            components={{
+              block: {
+                h1: ({ children }) => (
+                  <h1 className="mt-8 mb-4 text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100">
+                    {children}
+                  </h1>
+                ),
+                h2: ({ children }) => (
+                  <h2 className="mt-8 mb-4 text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
+                    {children}
+                  </h2>
+                ),
+                h3: ({ children }) => (
+                  <h3 className="mt-6 mb-3 text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    {children}
+                  </h3>
+                ),
+                h4: ({ children }) => (
+                  <h4 className="mt-6 mb-2 text-lg md:text-xl font-semibold text-gray-900 dark:text-gray-100">
+                    {children}
+                  </h4>
+                ),
+                normal: ({ children }) => (
+                  <p className="my-4 leading-7 text-gray-800 dark:text-gray-200">{children}</p>
+                ),
+                blockquote: ({ children }) => (
+                  <blockquote className="my-6 border-l-4 border-indigo-500 pl-4 italic text-gray-700 dark:text-gray-300">
+                    {children}
+                  </blockquote>
+                ),
+              },
+              list: {
+                bullet: ({ children }) => (
+                  <ul className="my-4 list-disc pl-6 space-y-1">{children}</ul>
+                ),
+                number: ({ children }) => (
+                  <ol className="my-4 list-decimal pl-6 space-y-1">{children}</ol>
+                ),
+              },
+              listItem: {
+                bullet: ({ children }) => <li className="leading-7">{children}</li>,
+                number: ({ children }) => <li className="leading-7">{children}</li>,
+              },
+              marks: {
+                link: ({ children, value }) => {
+                  const href = (value as any)?.href as string | undefined;
+                  const isExternal = href && /^(https?:)?\/\//.test(href);
+                  return (
+                    <a
+                      href={href}
+                      target={isExternal ? "_blank" : undefined}
+                      rel={isExternal ? "noopener noreferrer" : undefined}
+                      className="underline decoration-indigo-500/60 hover:decoration-indigo-500 text-indigo-700 dark:text-indigo-400"
+                    >
+                      {children}
+                    </a>
+                  );
+                },
+                strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                em: ({ children }) => <em className="italic">{children}</em>,
+              },
+            }}
+          />
+        )}
       </div>
 
       {/* Newsletter CTA */}

@@ -38,7 +38,7 @@ const CATEGORIES_QUERY = `*[_type == "category"]{
   "count": count(*[_type == "post" && defined(slug.current) && references(^._id)])
 } | order(count desc, title asc)`;
 
-const options = { next: { revalidate: 0 } };
+const options = { next: { tags: ["posts", "categories"] } };
 
 export default async function BlogPage({
   searchParams,

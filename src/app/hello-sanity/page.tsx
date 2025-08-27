@@ -9,7 +9,7 @@ const POSTS_QUERY = `*[_type == "post"]{
   publishedAt
 }`;
 
-const options = { next: { revalidate: 30 } };
+const options = { next: { tags: ["posts"] } };
 
 export default async function PostsPage() {
   const posts = await client.fetch<SanityDocument[]>(POSTS_QUERY, {}, options);
