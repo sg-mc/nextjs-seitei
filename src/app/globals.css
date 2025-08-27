@@ -200,6 +200,24 @@ body {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
+/* Mobile: tap to reveal for service cards */
+@media (max-width: 639px) {
+  .service-card .desc {
+    max-height: 0;
+    opacity: 0;
+  }
+  .service-card[data-revealed='true'] .desc {
+    max-height: 10rem; /* approx. tailwind max-h-40 */
+    opacity: 1;
+  }
+  .service-card .cta {
+    opacity: 0;
+  }
+  .service-card[data-revealed='true'] .cta {
+    opacity: 1;
+  }
+}
+
 /* Header title outlined style: white fill with purple stroke */
 .outlined-purple {
   color: #ffffff; /* white fill */

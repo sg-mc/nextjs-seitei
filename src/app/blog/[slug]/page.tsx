@@ -170,17 +170,15 @@ export default async function PostPage({
                 style={{ animationDelay: `${index * 0.05}s` }}
               >
                 <Link href={`/blog/${rp.slug.current}`} className="block">
-                  {rp.mainImageUrl && (
-                    <div className="aspect-video w-full overflow-hidden relative">
-                      <Image
-                        src={rp.mainImageUrl}
-                        alt={rp.title}
-                        fill
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
-                        sizes="(min-width: 768px) 50vw, 100vw"
-                      />
-                    </div>
-                  )}
+                  <div className="aspect-video w-full overflow-hidden relative">
+                    <Image
+                      src={rp.mainImageUrl ?? "/blank.png"}
+                      alt={rp.title}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      sizes="(min-width: 768px) 50vw, 100vw"
+                    />
+                  </div>
                   <div className="p-5">
                     <time className="text-sm text-gray-500 dark:text-gray-400">
                       {rp.publishedAt

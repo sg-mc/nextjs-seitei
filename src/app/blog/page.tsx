@@ -147,7 +147,7 @@ export default async function BlogPage({
           </aside>
 
           {/* Mobile: Collapsible categories */}
-          <div className="lg:hidden col-span-12">
+          <div className="lg:hidden">  {/* or: className="lg:hidden col-span-full" */}
             <details className="rounded-2xl border border-gray-200 bg-white">
               <summary className="list-none cursor-pointer px-4 py-3 font-semibold text-gray-900 flex items-center justify-between">
                 カテゴリ
@@ -182,27 +182,25 @@ export default async function BlogPage({
           </div>
 
           {/* Grid: Posts */}
-          <div className="col-span-1 lg:col-span-7 grid gap-3 sm:gap-4 md:gap-6 grid-cols-2">
+          <div className="col-span-full lg:col-span-7 grid grid-cols-2 items-start gap-3 sm:gap-4 md:gap-6">
             {posts.map((post, index) => (
               <article
                 key={post._id}
-                className="group relative bg-white rounded-2xl border border-gray-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 overflow-hidden animate-slideIn"
+                className="group relative self-start bg-white rounded-2xl border border-gray-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 overflow-hidden animate-slideIn"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
               <Link href={`/blog/${post.slug.current}`} className="block">
-                {post.mainImageUrl && (
-                  <div className="aspect-square sm:aspect-[4/3] md:aspect-video w-full overflow-hidden relative">
-                    <Image
-                      src={post.mainImageUrl}
-                      alt={post.title}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      sizes="(min-width: 1024px) 40vw, (min-width: 768px) 50vw, 50vw"
-                    />
-                  </div>
-                )}
+                <div className="aspect-[16/9] md:aspect-video w-full overflow-hidden relative">
+                  <Image
+                    src={post.mainImageUrl ?? "/blank.png"}
+                    alt={post.title}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    sizes="(min-width: 1024px) 40vw, (min-width: 768px) 50vw, 50vw"
+                  />
+                </div>
                 
-                <div className="p-3 sm:p-4 md:p-6 lg:p-8">
+                <div className="p-2 sm:p-4 md:p-6 lg:p-8">
                   <time className="text-xs sm:text-sm md:text-base text-gray-500 font-medium">
                     {post.publishedAt
                       ? new Date(post.publishedAt).toLocaleDateString('ja-JP', {
@@ -213,7 +211,7 @@ export default async function BlogPage({
                       : ''}
                   </time>
                   
-                  <h2 className="mt-1.5 sm:mt-2 text-base sm:text-lg md:text-2xl font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors duration-200 line-clamp-2">
+                  <h2 className="mt-1.5 sm:mt-2 text-sm sm:text-lg md:text-2xl leading-snug font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors duration-200 line-clamp-2 break-words">
                     {post.title}
                   </h2>
                   

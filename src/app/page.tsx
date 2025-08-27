@@ -3,6 +3,7 @@ import Image from "next/image";
 import { type SanityDocument } from "next-sanity";
 import { client } from "@/sanity/client";
 import ScrollAnimation from "./components/ScrollAnimation";
+import MobileCardTapToReveal from "./components/MobileCardTapToReveal";
 
 const LATEST_POSTS_QUERY = `*[
   _type == "post"
@@ -24,6 +25,7 @@ export default async function HomePage() {
 
   return (
     <main className="min-h-screen">
+      <MobileCardTapToReveal />
       <ScrollAnimation />
       {/* Hero Section */}
       <section className="relative text-white overflow-hidden">
@@ -38,7 +40,7 @@ export default async function HomePage() {
         >
           <div className="absolute inset-0 bg-black/50"></div>
         </div>
-        <div className="relative z-10 container mx-auto max-w-6xl px-6 py-24 md:py-32">
+        <div className="relative z-10 container mx-auto max-w-6xl px-6 py-16 md:py-32">
           <div className="animate-fadeInUp">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-400 animate-gradient glow-text">
               聖丁日記-旧アメブロ跡地-
@@ -92,17 +94,15 @@ export default async function HomePage() {
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <Link href={`/blog/${post.slug.current}`} className="block">
-                  {post.mainImageUrl && (
-                    <div className="aspect-video w-full overflow-hidden relative">
-                      <Image 
-                        src={post.mainImageUrl} 
-                        alt={post.title}
-                        fill
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
-                        sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                      />
-                    </div>
-                  )}
+                  <div className="aspect-video w-full overflow-hidden relative">
+                    <Image 
+                      src={post.mainImageUrl ?? "/blank.png"} 
+                      alt={post.title}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                    />
+                  </div>
                   <div className="p-6">
                   <time className="text-sm text-gray-500 dark:text-gray-400">
                     {new Date(post.publishedAt).toLocaleDateString('ja-JP', {
@@ -144,7 +144,7 @@ export default async function HomePage() {
             関連サービス
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 max-w-3xl sm:max-w-4xl mx-auto">
-            <a href="https://note.com/fistofphoenix/magazines" target="_blank" rel="noopener noreferrer" className="group relative w-full bg-white dark:bg-gray-900 rounded-xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[4/3] md:aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover-lift card-3d gradient-border animate-scaleIn">
+            <a href="https://note.com/fistofphoenix/magazines" target="_blank" rel="noopener noreferrer" className="service-card group relative w-full bg-white dark:bg-gray-900 rounded-xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[4/3] md:aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover-lift card-3d gradient-border animate-scaleIn">
               <div className="absolute inset-0 opacity-20">
                 <Image 
                   src="/illust.png" 
@@ -163,15 +163,15 @@ export default async function HomePage() {
                 />
               </div>
               <h3 className="text-xl font-bold mb-3 relative z-10">白熱教室</h3>
-              <p className="text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-y-auto transition-all duration-300 relative z-10">
+              <p className="desc text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-y-auto transition-all duration-300 relative z-10">
                 noteでオーディオブックを販売しています。
 男子の人生にとって必須の栄養であるカネと女の成功、その成分がたくさん含まれた音声教材です。
               </p>
-              <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 relative z-10">
+              <div className="cta mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 relative z-10">
                 <span className="text-indigo-600 dark:text-indigo-400 font-semibold">続きはこちら →</span>
               </div>
             </a>
-            <div className="group relative w-full bg-white dark:bg-gray-900 rounded-xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[4/3] md:aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.1s'}}>
+            <div className="service-card group relative w-full bg-white dark:bg-gray-900 rounded-xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[4/3] md:aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.1s'}}>
               <div className="absolute inset-0 opacity-20">
                 <Image 
                   src="/club.png" 
@@ -190,14 +190,14 @@ export default async function HomePage() {
                 />
               </div>
               <h3 className="text-xl font-bold mb-3 relative z-10">聖丁倶楽部</h3>
-              <p className="text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-y-auto transition-all duration-300 relative z-10">
+              <p className="desc text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-y-auto transition-all duration-300 relative z-10">
                 DIY技術向上と、所有物件のリフォーム完工を図る、コミュニティ参加型の実践型DIYスクールです。
               </p>
-              <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 relative z-10">
+              <div className="cta mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 relative z-10">
                 <span className="text-indigo-600 dark:text-indigo-400 font-semibold">詳しくは下記X,メルマガをチェック</span>
               </div>
             </div>
-            <a href="https://itoshima-honeygift.com/" target="_blank" rel="noopener noreferrer" className="group relative w-full bg-white dark:bg-gray-900 rounded-xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[4/3] md:aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.2s'}}>
+            <a href="https://itoshima-honeygift.com/" target="_blank" rel="noopener noreferrer" className="service-card group relative w-full bg-white dark:bg-gray-900 rounded-xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[4/3] md:aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.2s'}}>
               <div className="absolute inset-0 opacity-20">
                 <Image 
                   src="/honey.jpg" 
@@ -217,15 +217,15 @@ export default async function HomePage() {
                   />
                 </div>
                 <h3 className="text-xl font-bold mb-3">ITOSHIMA HONEY</h3>
-                <p className="text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-hidden transition-all duration-300">
+                <p className="desc text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-hidden transition-all duration-300">
                   福岡県糸島市の豊かな土地の、四季折々の花から集めた蜜からなる絶品のはちみつです。
                 </p>
-                <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="cta mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <span className="text-indigo-600 dark:text-indigo-400 font-semibold">続きはこちら →</span>
                 </div>
               </div>
             </a>
-            <a href="https://sg-mc.github.io/sglp/" target="_blank" rel="noopener noreferrer" className="group relative w-full bg-white dark:bg-gray-900 rounded-xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[4/3] md:aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.3s'}}>
+            <a href="https://saintgrail.org/" target="_blank" rel="noopener noreferrer" className="service-card group relative w-full bg-white dark:bg-gray-900 rounded-xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 aspect-[4/3] md:aspect-[3/2] flex flex-col justify-center items-center text-center overflow-hidden hover:aspect-auto hover:min-h-[200px] hover-lift card-3d gradient-border animate-scaleIn" style={{animationDelay: '0.3s'}}>
               <div className="absolute inset-0 opacity-20">
                 <Image 
                   src="/saint-grail.png" 
@@ -245,11 +245,11 @@ export default async function HomePage() {
                   />
                 </div>
                 <h3 className="text-xl font-bold mb-3">セイントグレイル</h3>
-                <p className="text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-hidden transition-all duration-300">
+                <p className="desc text-base text-gray-600 dark:text-gray-400 px-4 max-h-0 group-hover:max-h-40 overflow-hidden transition-all duration-300">
                   「自分で使いたい」から開発した、
                   <br />Amazon限定の男性用基礎化粧品セット
                 </p>
-                <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="cta mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <span className="text-indigo-600 dark:text-indigo-400 font-semibold">続きはこちら →</span>
                 </div>
               </div>
