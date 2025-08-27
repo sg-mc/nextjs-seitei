@@ -72,7 +72,7 @@ export default async function PostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const postOptions = { next: { tags: [`post:${slug}`, "posts"] } } as const;
+  const postOptions: { next: { tags: string[] } } = { next: { tags: [`post:${slug}`, "posts"] } };
   const post = await client.fetch<Post>(POST_QUERY, { slug }, postOptions);
   const postImageUrl = post.image
     ? urlFor(post.image)?.width(1200).height(675).url()
@@ -85,7 +85,7 @@ export default async function PostPage({
     : [];
   const tags: string[] = Array.isArray(post.tags) ? post.tags : [];
 
-  const listOptions = { next: { tags: ["posts"] } } as const;
+  const listOptions: { next: { tags: string[] } } = { next: { tags: ["posts"] } };
   let relatedPosts = await client.fetch<RelatedPost[]>(
     RELATED_POSTS_QUERY,
     { slug, categorySlugs, tags },
