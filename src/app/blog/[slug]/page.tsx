@@ -1,4 +1,4 @@
-import { PortableText, type SanityDocument } from "next-sanity";
+import { PortableText } from "next-sanity";
 import imageUrlBuilder from "@sanity/image-url";
 import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { client } from "@/sanity/client";
@@ -183,7 +183,9 @@ export default async function PostPage({
               },
               marks: {
                 link: ({ children, value }) => {
-                  const href = (value as any)?.href as string | undefined;
+                  const v = value as Record<string, unknown> | undefined;
+                  const href =
+                    v && typeof v.href === "string" ? (v.href as string) : undefined;
                   const isExternal = href && /^(https?:)?\/\//.test(href);
                   return (
                     <a

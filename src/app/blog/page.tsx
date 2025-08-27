@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { type SanityDocument } from "next-sanity";
+// no need for SanityDocument type here
 import { client } from "@/sanity/client";
 
 // Local types for fetched data
