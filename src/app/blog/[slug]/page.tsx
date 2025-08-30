@@ -139,6 +139,8 @@ export default async function PostPage({
           <PortableText
             value={post.body}
             components={{
+              // 安全なリンクのみ許可
+              types: {},
               block: {
                 h1: ({ children }) => (
                   <h1 className="mt-8 mb-4 text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100">
@@ -184,9 +186,26 @@ export default async function PostPage({
               marks: {
                 link: ({ children, value }) => {
                   const v = value as Record<string, unknown> | undefined;
-                  const href =
-                    v && typeof v.href === "string" ? (v.href as string) : undefined;
-                  const isExternal = href && /^(https?:)?\/\//.test(href);
+                  const rawHref = v && typeof v.href === "string" ? (v.href as string) : undefined;
+
+                  const sanitizeHref = (href?: string): string | undefined => {
+                    if (!href) return undefined;
+                    // 許可: 相対パス, アンカー, http/https, mailto, tel
+                    if (href.startsWith("/") || href.startsWith("#")) return href;
+                    try {
+                      const url = new URL(href);
+                      const allowed = ["http:", "https:", "mailto:", "tel:"];
+                      return allowed.includes(url.protocol.toLowerCase()) ? href : undefined;
+                    } catch {
+                      return undefined;
+                    }
+                  };
+
+                  const href = sanitizeHref(rawHref);
+                  if (!href) {
+                    return <span>{children}</span>;
+                  }
+                  const isExternal = href.startsWith("http://") || href.startsWith("https://");
                   return (
                     <a
                       href={href}

@@ -22,11 +22,10 @@ export async function POST(req: NextRequest) {
   }
 
   const auth = req.headers.get("authorization");
-  const url = new URL(req.url);
-  const secretFromQuery = url.searchParams.get("secret");
   const bearer = auth?.startsWith("Bearer ") ? auth.slice(7) : undefined;
 
-  if (secretFromQuery !== secret && bearer !== secret) {
+  // 認証はAuthorizationヘッダーのみ許可（クエリでのsecretは無効化）
+  if (bearer !== secret) {
     return unauthorized();
   }
 

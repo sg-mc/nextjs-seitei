@@ -18,7 +18,8 @@ const LATEST_POSTS_QUERY = `*[
   "mainImageUrl": mainImage.asset->url
 }`;
 
-const options = { next: { tags: ["posts", "categories"] } };
+// Enable ISR so latest posts refresh automatically even without webhooks
+const options = { next: { revalidate: 60, tags: ["posts", "categories"] } };
 
 export default async function HomePage() {
   const latestPosts = await client.fetch<SanityDocument[]>(LATEST_POSTS_QUERY, {}, options);
