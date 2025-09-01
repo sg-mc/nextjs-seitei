@@ -97,7 +97,7 @@ export default async function HomePage() {
                 <Link href={`/blog/${post.slug.current}`} className="block">
                   <div className="aspect-video w-full overflow-hidden relative">
                     <Image 
-                      src={post.mainImageUrl ?? "/blank.png"} 
+                      src={post.mainImageUrl ?? "/聖丁アイコン.jpg"} 
                       alt={post.title}
                       fill
                       className="object-cover transition-transform duration-300 group-hover:scale-105"

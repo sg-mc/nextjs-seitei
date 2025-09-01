@@ -1,11 +1,22 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV !== "production";
+
+const scriptSrc = [
+  "'self'",
+  "https://www.googletagmanager.com",
+  "https://www.google-analytics.com",
+  "'unsafe-inline'",
+  // Next.js の開発モードでは eval が使われるため、開発時のみ許可
+  ...(isDev ? ["'unsafe-eval'"] : []),
+].join(" ");
+
 const securityHeaders = [
   {
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com 'unsafe-inline'",
+      `script-src ${scriptSrc}`,
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https://cdn.sanity.io",
       "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com",
@@ -47,6 +58,15 @@ const nextConfig: NextConfig = {
         source: "/hello-sanity/:slug",
         destination: "/blog/:slug",
         permanent: true,
+      },
+    ];
+  },
+  async rewrites() {
+    return [
+      // ダウンロード画像の設置前でも表示されるよう一時的にPNGへリライト
+      {
+        source: "/聖丁アイコン.jpg",
+        destination: "/seitei-icon.png",
       },
     ];
   },

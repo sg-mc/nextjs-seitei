@@ -261,7 +261,7 @@ export default async function PostPage({
                 <Link href={`/blog/${rp.slug.current}`} className="block">
                   <div className="aspect-video w-full overflow-hidden relative">
                     <Image
-                      src={rp.mainImageUrl ?? "/blank.png"}
+                      src={rp.mainImageUrl ?? "/聖丁アイコン.jpg"}
                       alt={rp.title}
                       fill
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
