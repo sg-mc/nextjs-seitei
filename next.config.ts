@@ -61,15 +61,6 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  async rewrites() {
-    return [
-      // ダウンロード画像の設置前でも表示されるよう一時的にPNGへリライト
-      {
-        source: "/聖丁アイコン.jpg",
-        destination: "/seitei-icon.png",
-      },
-    ];
-  },
 };
 
 export default nextConfig;
