@@ -4,6 +4,7 @@ import { type SanityDocument } from "next-sanity";
 import { client } from "@/sanity/client";
 import ScrollAnimation from "./components/ScrollAnimation";
 import MobileCardTapToReveal from "./components/MobileCardTapToReveal";
+import { formatDate } from "@/lib/date"; // 変更理由: 日付表示を共通化し重複削減と安定性を向上
 
 const LATEST_POSTS_QUERY = `*[
   _type == "post"
@@ -22,7 +23,13 @@ const LATEST_POSTS_QUERY = `*[
 const options = { next: { revalidate: 60, tags: ["posts", "categories"] } };
 
 export default async function HomePage() {
-  const latestPosts = await client.fetch<SanityDocument[]>(LATEST_POSTS_QUERY, {}, options);
+  // 変更理由: フェッチ失敗時のフォールバックを追加（エラーハンドリング改善）
+  let latestPosts: SanityDocument[] = [];
+  try {
+    latestPosts = await client.fetch<SanityDocument[]>(LATEST_POSTS_QUERY, {}, options);
+  } catch (e) {
+    console.error("[home] Failed to fetch latest posts", e);
+  }
 
   return (
     <main className="min-h-screen">
@@ -106,11 +113,7 @@ export default async function HomePage() {
                   </div>
                   <div className="p-6">
                   <time className="text-sm text-gray-500 dark:text-gray-400">
-                    {new Date(post.publishedAt).toLocaleDateString('ja-JP', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
+                    {formatDate(post.publishedAt)}
                   </time>
                   
                   <h3 className="mt-3 text-lg font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2">

@@ -4,6 +4,8 @@ import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { client } from "@/sanity/client";
 import Link from "next/link";
 import Image from "next/image";
+import { notFound } from "next/navigation"; // 変更理由: データ未取得時に適切に404へ（エラーハンドリング改善）
+import { formatDate } from "@/lib/date"; // 変更理由: 日付表示の共通化（DRY）
 
 // Local types for fetched data
 type SlugRef = { current?: string };
@@ -69,11 +71,21 @@ const urlFor = (source: SanityImageSource) =>
 export default async function PostPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  // 変更理由: Next.js App Router の正しい型へ是正（ベストプラクティス）
+  params: { slug: string };
 }) {
-  const { slug } = await params;
+  const { slug } = params;
   const postOptions: { next: { tags: string[] } } = { next: { tags: [`post:${slug}`, "posts"] } };
-  const post = await client.fetch<Post>(POST_QUERY, { slug }, postOptions);
+  let post: Post | null = null;
+  try {
+    post = await client.fetch<Post>(POST_QUERY, { slug }, postOptions);
+  } catch (e) {
+    console.error(`[post:${slug}] Failed to fetch post`, e);
+  }
+  if (!post) {
+    // 変更理由: 不正slugやエラー時に404を明示
+    notFound();
+  }
   const postImageUrl = post.image
     ? urlFor(post.image)?.width(1200).height(675).url()
     : null;
@@ -86,18 +98,22 @@ export default async function PostPage({
   const tags: string[] = Array.isArray(post.tags) ? post.tags : [];
 
   const listOptions: { next: { tags: string[] } } = { next: { tags: ["posts"] } };
-  let relatedPosts = await client.fetch<RelatedPost[]>(
-    RELATED_POSTS_QUERY,
-    { slug, categorySlugs, tags },
-    listOptions
-  );
-
-  if (!relatedPosts || relatedPosts.length === 0) {
+  let relatedPosts: RelatedPost[] = [];
+  try {
     relatedPosts = await client.fetch<RelatedPost[]>(
-      LATEST_EXCEPT_QUERY,
-      { slug },
+      RELATED_POSTS_QUERY,
+      { slug, categorySlugs, tags },
       listOptions
     );
+    if (!relatedPosts || relatedPosts.length === 0) {
+      relatedPosts = await client.fetch<RelatedPost[]>(
+        LATEST_EXCEPT_QUERY,
+        { slug },
+        listOptions
+      );
+    }
+  } catch (e) {
+    console.error(`[post:${slug}] Failed to fetch related posts`, e);
   }
 
   return (
@@ -133,7 +149,7 @@ export default async function PostPage({
       
       <div>
         {post.publishedAt ? (
-          <p>Published: {new Date(post.publishedAt).toLocaleDateString()}</p>
+          <p>Published: {formatDate(post.publishedAt)}</p>
         ) : null}
         {Array.isArray(post.body) && (
           <PortableText
@@ -270,13 +286,7 @@ export default async function PostPage({
                   </div>
                   <div className="p-5">
                     <time className="text-sm text-gray-500 dark:text-gray-400">
-                      {rp.publishedAt
-                        ? new Date(rp.publishedAt).toLocaleDateString('ja-JP', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          })
-                        : ''}
+                      {formatDate(rp.publishedAt)}
                     </time>
                     <h3 className="mt-2 text-lg font-semibold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2">
                       {rp.title}

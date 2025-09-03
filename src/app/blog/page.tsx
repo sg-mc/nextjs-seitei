@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 // no need for SanityDocument type here
 import { client } from "@/sanity/client";
+import { formatDate } from "@/lib/date"; // 変更理由: 日付表示を共通化して重複削減・可読性改善
 
 // Local types for fetched data
 type SlugRef = { current?: string };
@@ -17,11 +18,12 @@ type PostListItem = {
   mainImageUrl?: string;
 };
 
+// 変更理由: ページネーション対応のため、スライスを変数化（$start, $end）
 const POSTS_QUERY = `*[
   _type == "post"
   && defined(slug.current)
   && (!defined($category) || $category in categories[]->slug.current)
-]|order(publishedAt desc)[0...12]{
+]|order(publishedAt desc)[$start...$end]{
   _id, 
   title, 
   slug, 
@@ -30,6 +32,13 @@ const POSTS_QUERY = `*[
   categories[]->{ _id, title, slug },
   "mainImageUrl": mainImage.asset->url
 }`;
+
+// 変更理由: 総件数を取得してページ数計算に利用（UI/ナビに必要）
+const POSTS_COUNT_QUERY = `count(*[
+  _type == "post"
+  && defined(slug.current)
+  && (!defined($category) || $category in categories[]->slug.current)
+])`;
 
 const CATEGORIES_QUERY = `*[_type == "category"]{
   _id,
@@ -40,18 +49,65 @@ const CATEGORIES_QUERY = `*[_type == "category"]{
 
 const options = { next: { tags: ["posts", "categories"] } };
 
+// 変更理由: ページ番号配列を生成するヘルパーでUIロジックを分離し可読性向上
+function createPagination(current: number, total: number, siblingCount = 1): Array<number | 'dots'> {
+  const totalPageNumbers = siblingCount * 2 + 5; // 1, last, current±sibling, 2つのドット
+  if (total <= totalPageNumbers) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+  const leftSibling = Math.max(current - siblingCount, 2);
+  const rightSibling = Math.min(current + siblingCount, total - 1);
+  const showLeftDots = leftSibling > 2;
+  const showRightDots = rightSibling < total - 1;
+
+  const pages: Array<number | 'dots'> = [1];
+  if (showLeftDots) {
+    pages.push('dots');
+  } else {
+    for (let i = 2; i < leftSibling; i++) pages.push(i);
+  }
+  for (let i = leftSibling; i <= rightSibling; i++) pages.push(i);
+  if (showRightDots) {
+    pages.push('dots');
+  } else {
+    for (let i = rightSibling + 1; i < total; i++) pages.push(i);
+  }
+  pages.push(total);
+  return pages;
+}
+
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  // 変更理由: Next.js App Router の正しい型へ是正（ベストプラクティス）
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const sp = await searchParams;
-  const categoryParam = Array.isArray(sp?.category) ? sp.category[0] : sp?.category;
+  const sp = searchParams ?? {};
+  const categoryParam = Array.isArray(sp.category) ? sp.category[0] : sp.category;
   const categorySlug = categoryParam ?? null;
-  const [categories, posts] = await Promise.all([
-    client.fetch<CategoryWithCount[]>(CATEGORIES_QUERY, {}, options),
-    client.fetch<PostListItem[]>(POSTS_QUERY, { category: categorySlug }, options),
-  ]);
+  // 変更理由: ページネーション（10件/ページ）を導入
+  const pageSize = 10;
+  const pageRaw = Array.isArray(sp.page) ? sp.page[0] : sp.page;
+  const page = Math.max(1, Number.parseInt(String(pageRaw || '1'), 10) || 1);
+  const start = (page - 1) * pageSize;
+  const end = start + pageSize;
+  // 変更理由: フェッチのエラーハンドリングを追加し、UIの堅牢性を向上
+  let categories: CategoryWithCount[] = [];
+  let posts: PostListItem[] = [];
+  let totalCount = 0;
+  try {
+    [categories, posts, totalCount] = await Promise.all([
+      client.fetch<CategoryWithCount[]>(CATEGORIES_QUERY, {}, options),
+      client.fetch<PostListItem[]>(POSTS_QUERY, { category: categorySlug, start, end }, options),
+      client.fetch<number>(POSTS_COUNT_QUERY, { category: categorySlug }, options),
+    ]);
+  } catch (e) {
+    console.error("[blog] Failed to fetch categories or posts", e);
+  }
+  const totalPages = totalCount > 0 ? Math.ceil(totalCount / pageSize) : 1;
+  const hasPrev = page > 1;
+  const hasNext = page < totalPages;
+  const pageItems = createPagination(page, totalPages, 1);
   const selectedCategory = categories?.find(
     (c) => c?.slug?.current === categoryParam
   );
@@ -202,13 +258,7 @@ export default async function BlogPage({
                 
                 <div className="p-2 sm:p-4 md:p-6 lg:p-8">
                   <time className="text-xs sm:text-sm md:text-base text-gray-500 font-medium">
-                    {post.publishedAt
-                      ? new Date(post.publishedAt).toLocaleDateString('ja-JP', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })
-                      : ''}
+                    {formatDate(post.publishedAt)}
                   </time>
                   
                   <h2 className="mt-1.5 sm:mt-2 text-sm sm:text-lg md:text-2xl leading-snug font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors duration-200 line-clamp-2 break-words">
@@ -232,6 +282,84 @@ export default async function BlogPage({
               </Link>
             </article>
           ))}
+          </div>
+          
+          {/* Pagination: サイトのスタイルに合わせたリッチUI */}
+          <div className="col-span-full lg:col-span-7 mt-8">
+            <nav aria-label="ページネーション"
+              className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 shadow-sm px-4 py-3 flex items-center justify-center gap-2 md:gap-3">
+              {/* Prev */}
+              {hasPrev ? (
+                <Link
+                  href={`/blog?${new URLSearchParams({ ...(categorySlug ? { category: categorySlug } : {}), page: String(page - 1) }).toString()}`}
+                  className="inline-flex items-center gap-1 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+                  aria-label="前のページ"
+                >
+                  ← 前へ
+                </Link>
+              ) : (
+                <span
+                  className="inline-flex items-center gap-1 rounded-full border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/60 px-3 py-2 text-sm font-medium text-gray-400 cursor-not-allowed"
+                  aria-disabled="true"
+                >
+                  ← 前へ
+                </span>
+              )}
+
+              {/* Page numbers */}
+              <ul className="flex items-center gap-1">
+                {pageItems.map((item, idx) => {
+                  if (item === 'dots') {
+                    return (
+                      <li key={`dots-${idx}`}>
+                        <span className="px-3 py-2 text-gray-400">…</span>
+                      </li>
+                    );
+                  }
+                  const isCurrent = item === page;
+                  const href = `/blog?${new URLSearchParams({ ...(categorySlug ? { category: categorySlug } : {}), page: String(item) }).toString()}`;
+                  return (
+                    <li key={item}>
+                      {isCurrent ? (
+                        <span
+                          aria-current="page"
+                          className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 text-sm font-semibold shadow-sm"
+                        >
+                          {item}
+                        </span>
+                      ) : (
+                        <Link
+                          href={href}
+                          aria-label={`ページ ${item}`}
+                          className="inline-flex items-center justify-center rounded-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+                        >
+                          {item}
+                        </Link>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+
+              {/* Next */}
+              {hasNext ? (
+                <Link
+                  href={`/blog?${new URLSearchParams({ ...(categorySlug ? { category: categorySlug } : {}), page: String(page + 1) }).toString()}`}
+                  className="inline-flex items-center gap-1 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+                  aria-label="次のページ"
+                >
+                  次へ →
+                </Link>
+              ) : (
+                <span
+                  className="inline-flex items-center gap-1 rounded-full border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/60 px-3 py-2 text-sm font-medium text-gray-400 cursor-not-allowed"
+                  aria-disabled="true"
+                >
+                  次へ →
+                </span>
+              )}
+            </nav>
+            <p className="mt-2 text-center text-xs text-gray-500">ページ {page} / {totalPages}</p>
           </div>
         </div>
         

@@ -8,6 +8,8 @@ export default function MobileCardTapToReveal() {
     if (!isMobile) return;
 
     const cards: HTMLElement[] = Array.from(document.querySelectorAll('.service-card')) as HTMLElement[];
+    // 変更理由: 対象要素が無い場合は早期returnし、無駄なハンドラ登録を回避（パフォーマンス微改善）
+    if (cards.length === 0) return;
 
     const onClick = (e: Event) => {
       const el = e.currentTarget as HTMLElement;
@@ -34,4 +36,3 @@ export default function MobileCardTapToReveal() {
 
   return null;
 }
-

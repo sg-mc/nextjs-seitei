@@ -54,6 +54,9 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
+        {/* 変更理由: GAへの接続を事前確立し、初回ロードのレイテンシを低減（パフォーマンス微改善） */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://www.google-analytics.com" />
         {/* Google tag (gtag.js) */}
         <Script
           strategy="afterInteractive"
