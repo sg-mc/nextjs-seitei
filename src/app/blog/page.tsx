@@ -79,10 +79,10 @@ function createPagination(current: number, total: number, siblingCount = 1): Arr
 export default async function BlogPage({
   searchParams,
 }: {
-  // 変更理由: Next.js App Router の正しい型へ是正（ベストプラクティス）
-  searchParams?: { [key: string]: string | string[] | undefined };
+  // Netlifyの型チェックに合わせ、NextのPageProps準拠（Promise）に戻す
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const sp = searchParams ?? {};
+  const sp = await searchParams;
   const categoryParam = Array.isArray(sp.category) ? sp.category[0] : sp.category;
   const categorySlug = categoryParam ?? null;
   // 変更理由: ページネーション（10件/ページ）を導入

@@ -71,10 +71,10 @@ const urlFor = (source: SanityImageSource) =>
 export default async function PostPage({
   params,
 }: {
-  // 変更理由: Next.js App Router の正しい型へ是正（ベストプラクティス）
-  params: { slug: string };
+  // Netlifyの型チェックに合わせ、NextのPageProps準拠（Promise）に戻す
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } = params;
+  const { slug } = await params;
   const postOptions: { next: { tags: string[] } } = { next: { tags: [`post:${slug}`, "posts"] } };
   let post: Post | null = null;
   try {
