@@ -17,6 +17,7 @@ type Post = {
   publishedAt?: string | Date;
   body?: unknown;
   image?: SanityImageSource | null;
+  imageLqip?: string | null;
   tags?: string[];
   categories?: Category[];
 };
@@ -27,11 +28,18 @@ type RelatedPost = {
   publishedAt?: string;
   categories?: Category[];
   mainImageUrl?: string | null;
+  mainImageLqip?: string | null;
 };
 
+// 不要フィールドの展開を避け、必要最小限の取得に絞る（GROQ最適化）
 const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]{
-  ..., 
+  _id,
+  title,
+  slug,
+  publishedAt,
+  body,
   "image": mainImage,
+  "imageLqip": mainImage.asset->metadata.lqip,
   tags,
   categories[]->{ _id, title, slug }
 }`;
@@ -47,7 +55,8 @@ const RELATED_POSTS_QUERY = `*[
   slug,
   publishedAt,
   categories[]->{ _id, title, slug },
-  "mainImageUrl": mainImage.asset->url
+  "mainImageUrl": mainImage.asset->url,
+  "mainImageLqip": mainImage.asset->metadata.lqip
 }`;
 
 const LATEST_EXCEPT_QUERY = `*[_type == "post" && defined(slug.current) && slug.current != $slug]
@@ -57,7 +66,8 @@ const LATEST_EXCEPT_QUERY = `*[_type == "post" && defined(slug.current) && slug.
     slug,
     publishedAt,
     categories[]->{ _id, title, slug },
-    "mainImageUrl": mainImage.asset->url
+    "mainImageUrl": mainImage.asset->url,
+    "mainImageLqip": mainImage.asset->metadata.lqip
   }`;
 
 const { projectId, dataset } = client.config();
@@ -89,6 +99,11 @@ export default async function PostPage({
   const postImageUrl = post.image
     ? urlFor(post.image)?.width(1200).height(675).url()
     : null;
+  const postImageBlur = typeof (post as { imageLqip?: unknown }).imageLqip === "string"
+    ? ((post as { imageLqip?: string }).imageLqip!.startsWith("data:")
+        ? (post as { imageLqip?: string }).imageLqip!
+        : `data:image/jpeg;base64,${(post as { imageLqip?: string }).imageLqip!}`)
+    : undefined;
 
   const categorySlugs: string[] = Array.isArray(post.categories)
     ? post.categories
@@ -129,6 +144,10 @@ export default async function PostPage({
             fill
             className="object-cover"
             sizes="(min-width: 768px) 768px, 100vw"
+            priority
+            {...(postImageBlur
+              ? { placeholder: "blur" as const, blurDataURL: postImageBlur }
+              : {})}
           />
         </div>
       )}
@@ -276,13 +295,31 @@ export default async function PostPage({
               >
                 <Link href={`/blog/${rp.slug.current}`} className="block">
                   <div className="aspect-video w-full overflow-hidden relative">
-                    <Image
-                      src={rp.mainImageUrl ?? "/聖丁アイコン.jpg"}
-                      alt={rp.title}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      sizes="(min-width: 768px) 50vw, 100vw"
-                    />
+                    {rp.mainImageUrl ? (
+                      <Image
+                        src={rp.mainImageUrl}
+                        alt={rp.title}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        sizes="(min-width: 768px) 50vw, 100vw"
+                        {...(typeof rp.mainImageLqip === "string" && rp.mainImageLqip
+                          ? {
+                              placeholder: "blur" as const,
+                              blurDataURL: rp.mainImageLqip.startsWith("data:")
+                                ? rp.mainImageLqip
+                                : `data:image/jpeg;base64,${rp.mainImageLqip}`,
+                            }
+                          : {})}
+                      />
+                    ) : (
+                      <Image
+                        src="/聖丁アイコン.jpg"
+                        alt={rp.title}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        sizes="(min-width: 768px) 50vw, 100vw"
+                      />
+                    )}
                   </div>
                   <div className="p-5">
                     <time className="text-sm text-gray-500 dark:text-gray-400">
