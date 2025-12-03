@@ -37,7 +37,13 @@ const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]{
   title,
   slug,
   publishedAt,
-  body,
+  body[]{
+    ...,
+    _type == "image" => {
+      ...,
+      asset->{ _id, url, metadata { lqip, dimensions } }
+    }
+  },
   "image": mainImage,
   "imageLqip": mainImage.asset->metadata.lqip,
   tags,
@@ -175,7 +181,73 @@ export default async function PostPage({
             value={post.body}
             components={{
               // 安全なリンクのみ許可
-              types: {},
+              types: {
+                image: ({ value }) => {
+                  const imageValue = value as
+                    | {
+                        asset?:
+                          | { _ref?: string }
+                          | { url?: string; metadata?: { lqip?: string; dimensions?: { aspectRatio?: number } } };
+                        alt?: string;
+                        caption?: string;
+                      }
+                    | undefined;
+                  if (!imageValue?.asset) return null;
+
+                  const imageUrl = urlFor(imageValue)?.width(1600).fit("max").auto("format").url();
+                  if (!imageUrl) return null;
+
+                  const lqip =
+                    typeof imageValue.asset === "object" &&
+                    imageValue.asset &&
+                    "metadata" in imageValue.asset &&
+                    typeof imageValue.asset.metadata?.lqip === "string"
+                      ? imageValue.asset.metadata.lqip
+                      : undefined;
+                  const blurDataURL =
+                    typeof lqip === "string"
+                      ? lqip.startsWith("data:") ? lqip : `data:image/jpeg;base64,${lqip}`
+                      : undefined;
+                  const aspectRatio =
+                    typeof imageValue.asset === "object" &&
+                    imageValue.asset &&
+                    "metadata" in imageValue.asset &&
+                    typeof imageValue.asset.metadata?.dimensions?.aspectRatio === "number"
+                      ? imageValue.asset.metadata.dimensions.aspectRatio
+                      : undefined;
+                  const alt =
+                    typeof imageValue.alt === "string" && imageValue.alt.trim().length > 0
+                      ? imageValue.alt
+                      : "Embedded image";
+                  const caption =
+                    typeof imageValue.caption === "string" && imageValue.caption.trim().length > 0
+                      ? imageValue.caption
+                      : null;
+
+                  return (
+                    <figure className="my-8">
+                      <div
+                        className="relative w-full overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800"
+                        style={{ aspectRatio: aspectRatio || 16 / 9 }}
+                      >
+                        <Image
+                          src={imageUrl}
+                          alt={alt}
+                          fill
+                          className="object-contain"
+                          sizes="(min-width: 768px) 768px, 100vw"
+                          {...(blurDataURL ? { placeholder: "blur" as const, blurDataURL } : {})}
+                        />
+                      </div>
+                      {caption ? (
+                        <figcaption className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
+                          {caption}
+                        </figcaption>
+                      ) : null}
+                    </figure>
+                  );
+                },
+              },
               block: {
                 h1: ({ children }) => (
                   <h1 className="mt-8 mb-4 text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100">
