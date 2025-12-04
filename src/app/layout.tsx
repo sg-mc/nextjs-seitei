@@ -54,6 +54,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
+        <meta name="google-site-verification" content="l48rwPgw2gEjsECfMJzIu6bZ-U0Ed0s11kHfxFR4wgw" />
         {/* 変更理由: GAへの接続を事前確立し、初回ロードのレイテンシを低減（パフォーマンス微改善） */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://www.google-analytics.com" />
