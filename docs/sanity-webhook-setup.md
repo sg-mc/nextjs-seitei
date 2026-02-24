@@ -4,7 +4,7 @@ Overview
 - This project uses Next.js tag-based caching and revalidates on-demand when Sanity content changes.
 - Endpoint: `/api/revalidate`
 - Method: `POST`
-- Auth: Provide `Authorization: Bearer <SANITY_REVALIDATE_SECRET>` header or `?secret=<SANITY_REVALIDATE_SECRET>` query param.
+- Auth: Provide `Authorization: Bearer <SANITY_REVALIDATE_SECRET>` header.
 
 Environment
 - Add `SANITY_REVALIDATE_SECRET` to your deployment environment (e.g., `.env.local`, Vercel Project Settings).
@@ -33,7 +33,8 @@ Sanity Webhook Configuration
 Local Testing
 - Send a POST request:
   ```bash
-  curl -X POST "http://localhost:3000/api/revalidate?secret=$SANITY_REVALIDATE_SECRET" \
+  curl -X POST "http://localhost:3000/api/revalidate" \
+       -H "Authorization: Bearer $SANITY_REVALIDATE_SECRET" \
        -H "Content-Type: application/json" \
        -d '{"slug":"my-post-slug"}'
   ```
@@ -41,4 +42,4 @@ Local Testing
 Notes
 - If a slug is provided, the endpoint revalidates `post:{slug}` and the list tags. If not, it revalidates just the list tags.
 - You can expand tags later (e.g., `authors`, `settings`) and call `revalidateTag` accordingly.
-
+- Query-string secrets are not accepted by this route implementation.

@@ -30,6 +30,11 @@ type RelatedPost = {
   mainImageUrl?: string | null;
   mainImageLqip?: string | null;
 };
+type PostSlug = { slug?: string };
+
+export const revalidate = 1800;
+export const dynamicParams = false;
+export const dynamic = "force-static";
 
 // 不要フィールドの展開を避け、必要最小限の取得に絞る（GROQ最適化）
 const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]{
@@ -75,6 +80,12 @@ const LATEST_EXCEPT_QUERY = `*[_type == "post" && defined(slug.current) && slug.
     "mainImageUrl": mainImage.asset->url,
     "mainImageLqip": mainImage.asset->metadata.lqip
   }`;
+const POST_SLUGS_QUERY = `*[
+  _type == "post"
+  && defined(slug.current)
+]{
+  "slug": slug.current
+}`;
 
 const { projectId, dataset } = client.config();
 const urlFor = (source: SanityImageSource) =>
@@ -83,6 +94,19 @@ const urlFor = (source: SanityImageSource) =>
     : null;
 
 // options will be created per-request to include slug-based tags
+
+export async function generateStaticParams() {
+  try {
+    const slugs = await client.fetch<PostSlug[]>(POST_SLUGS_QUERY, {}, { next: { tags: ["posts"] } });
+    return slugs
+      .map((entry) => entry.slug)
+      .filter((slug): slug is string => Boolean(slug))
+      .map((slug) => ({ slug }));
+  } catch (e) {
+    console.error("[blog slug] Failed to fetch static params", e);
+    return [];
+  }
+}
 
 export default async function PostPage({
   params,
@@ -365,7 +389,7 @@ export default async function PostPage({
                 className="group relative bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"
                 style={{ animationDelay: `${index * 0.05}s` }}
               >
-                <Link href={`/blog/${rp.slug.current}`} className="block">
+                <Link href={`/blog/${rp.slug.current}`} prefetch={false} className="block">
                   <div className="aspect-video w-full overflow-hidden relative">
                     {rp.mainImageUrl ? (
                       <Image

@@ -29,6 +29,7 @@ export default async function PostsPage() {
           <Link
             key={post._id}
             href={`/blog/${post.slug.current}`}
+            prefetch={false}
             className="border p-4 rounded-lg hover:bg-gray-50 transition-colors"
           >
             <h2 className="text-2xl font-semibold">{post.title}</h2>
