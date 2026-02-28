@@ -33,7 +33,7 @@ type RelatedPost = {
 type PostSlug = { slug?: string };
 
 export const revalidate = 1800;
-export const dynamicParams = false;
+export const dynamicParams = true;
 export const dynamic = "force-static";
 
 // 不要フィールドの展開を避け、必要最小限の取得に絞る（GROQ最適化）
