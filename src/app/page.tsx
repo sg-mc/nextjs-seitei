@@ -6,7 +6,7 @@ import ScrollAnimation from "./components/ScrollAnimation";
 import MobileCardTapToReveal from "./components/MobileCardTapToReveal";
 import { formatDate } from "@/lib/date"; // 変更理由: 日付表示を共通化し重複削減と安定性を向上
 
-export const revalidate = 60;
+export const revalidate = 86400;
 export const dynamic = "force-static";
 
 const LATEST_POSTS_QUERY = `*[
@@ -22,8 +22,8 @@ const LATEST_POSTS_QUERY = `*[
   "mainImageUrl": mainImage.asset->url
 }`;
 
-// Enable ISR so latest posts refresh automatically even without webhooks
-const options = { next: { revalidate: 60, tags: ["posts", "categories"] } };
+// Build Hook運用前提: fetchレベルのrevalidateは不要（ページレベルの86400で統一）
+const options = { next: { tags: ["posts", "categories"] } };
 
 export default async function HomePage() {
   // 変更理由: フェッチ失敗時のフォールバックを追加（エラーハンドリング改善）

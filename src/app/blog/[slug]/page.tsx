@@ -32,7 +32,7 @@ type RelatedPost = {
 };
 type PostSlug = { slug?: string };
 
-export const revalidate = 1800;
+export const revalidate = 86400;
 export const dynamicParams = false;
 export const dynamic = "force-static";
 

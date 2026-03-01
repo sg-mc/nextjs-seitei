@@ -4,7 +4,7 @@ import BlogPageClient, {
   type PostListItem,
 } from "./BlogPageClient";
 
-export const revalidate = 1800;
+export const revalidate = 86400;
 export const dynamic = "force-static";
 
 const POSTS_QUERY = `*[
