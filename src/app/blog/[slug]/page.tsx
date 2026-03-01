@@ -33,7 +33,7 @@ type RelatedPost = {
 type PostSlug = { slug?: string };
 
 export const revalidate = 1800;
-export const dynamicParams = true;
+export const dynamicParams = false;
 export const dynamic = "force-static";
 
 // 不要フィールドの展開を避け、必要最小限の取得に絞る（GROQ最適化）
@@ -131,14 +131,14 @@ export default async function PostPage({
     : null;
   const postImageBlur = typeof (post as { imageLqip?: unknown }).imageLqip === "string"
     ? ((post as { imageLqip?: string }).imageLqip!.startsWith("data:")
-        ? (post as { imageLqip?: string }).imageLqip!
-        : `data:image/jpeg;base64,${(post as { imageLqip?: string }).imageLqip!}`)
+      ? (post as { imageLqip?: string }).imageLqip!
+      : `data:image/jpeg;base64,${(post as { imageLqip?: string }).imageLqip!}`)
     : undefined;
 
   const categorySlugs: string[] = Array.isArray(post.categories)
     ? post.categories
-        .map((c: Category) => c?.slug?.current)
-        .filter((s: string | undefined): s is string => Boolean(s))
+      .map((c: Category) => c?.slug?.current)
+      .filter((s: string | undefined): s is string => Boolean(s))
     : [];
   const tags: string[] = Array.isArray(post.tags) ? post.tags : [];
 
@@ -182,7 +182,7 @@ export default async function PostPage({
         </div>
       )}
       <h1 className="text-3xl md:text-4xl font-bold mb-4">{post.title}</h1>
-      
+
       <div className="flex flex-wrap gap-2 mb-6">
         {post.categories && post.categories.map((category: { _id: string; title: string }) => (
           <span key={category._id} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
@@ -195,7 +195,7 @@ export default async function PostPage({
           </span>
         ))}
       </div>
-      
+
       <div>
         {post.publishedAt ? (
           <p>Published: {formatDate(post.publishedAt)}</p>
@@ -209,12 +209,12 @@ export default async function PostPage({
                 image: ({ value }) => {
                   const imageValue = value as
                     | {
-                        asset?:
-                          | { _ref?: string }
-                          | { url?: string; metadata?: { lqip?: string; dimensions?: { aspectRatio?: number } } };
-                        alt?: string;
-                        caption?: string;
-                      }
+                      asset?:
+                      | { _ref?: string }
+                      | { url?: string; metadata?: { lqip?: string; dimensions?: { aspectRatio?: number } } };
+                      alt?: string;
+                      caption?: string;
+                    }
                     | undefined;
                   if (!imageValue?.asset) return null;
 
@@ -223,9 +223,9 @@ export default async function PostPage({
 
                   const lqip =
                     typeof imageValue.asset === "object" &&
-                    imageValue.asset &&
-                    "metadata" in imageValue.asset &&
-                    typeof imageValue.asset.metadata?.lqip === "string"
+                      imageValue.asset &&
+                      "metadata" in imageValue.asset &&
+                      typeof imageValue.asset.metadata?.lqip === "string"
                       ? imageValue.asset.metadata.lqip
                       : undefined;
                   const blurDataURL =
@@ -234,9 +234,9 @@ export default async function PostPage({
                       : undefined;
                   const aspectRatio =
                     typeof imageValue.asset === "object" &&
-                    imageValue.asset &&
-                    "metadata" in imageValue.asset &&
-                    typeof imageValue.asset.metadata?.dimensions?.aspectRatio === "number"
+                      imageValue.asset &&
+                      "metadata" in imageValue.asset &&
+                      typeof imageValue.asset.metadata?.dimensions?.aspectRatio === "number"
                       ? imageValue.asset.metadata.dimensions.aspectRatio
                       : undefined;
                   const alt =
@@ -400,11 +400,11 @@ export default async function PostPage({
                         sizes="(min-width: 768px) 50vw, 100vw"
                         {...(typeof rp.mainImageLqip === "string" && rp.mainImageLqip
                           ? {
-                              placeholder: "blur" as const,
-                              blurDataURL: rp.mainImageLqip.startsWith("data:")
-                                ? rp.mainImageLqip
-                                : `data:image/jpeg;base64,${rp.mainImageLqip}`,
-                            }
+                            placeholder: "blur" as const,
+                            blurDataURL: rp.mainImageLqip.startsWith("data:")
+                              ? rp.mainImageLqip
+                              : `data:image/jpeg;base64,${rp.mainImageLqip}`,
+                          }
                           : {})}
                       />
                     ) : (
